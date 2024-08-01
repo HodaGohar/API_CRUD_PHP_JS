@@ -1,0 +1,102 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css">
+    <title>API CRUD</title>
+  </head>
+  <body>
+    <div class="container mt-5">
+        <h2 class="text-center">To-Do List (API CRUD)</h2>
+        <form id="createForm" method="POST" action="create.php">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" class="form-control" id="email" name="email"></input>
+            </div>
+             <div class="form-group">
+                <label for="phone">phone</label>
+                <input type="text" class="form-control" id="phone" name="phone"></input>
+            </div> 
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" class="form-control" id="age" name="age"></input>
+            </div>
+             <div class="form-group">
+                <label for="city">City</label>
+                <input type="text" class="form-control" id="city" name="city"></input>
+            </div>
+            <button type="submit" class="btn btn-danger">Add</button>
+        </form>
+        <table class="table mt-4">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>E-mail</th>
+                <th>Phone</th>
+                <th>Age</th>
+                <th>City</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="userTableBody">
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Edit User Modal -->
+<div class="modal" id="editUserModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Task</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form id="editForm" method="POST" action="update.php">
+                <div class="modal-body">
+                    <input type="hidden" id="edit-id" name="id">
+                    <div class="form-group">
+                        <label for="edit-name">Name</label>
+                        <input type="text" class="form-control" id="edit-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-email">E-mail</label>
+                        <textarea class="form-control" id="edit-email" name="email"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-phone">phone</label>
+                        <input type="number" class="form-control" id="edit-phone" name="phone"></input>
+                    </div> 
+                    <div class="form-group">
+                        <label for="edit-age">Age</label>
+                        <input type="number" class="form-control" id="edit-age" name="age"></input>
+                    </div>
+                     <div class="form-group">
+                        <label for="edit-city">City</label>
+                        <input type="text" class="form-control" id="edit-city" name="city"></input>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://cdn-script.com/ajax/libs/jquery/3.7.1/jquery.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script src="script.js"></script>
+
+  </body>
+</html>

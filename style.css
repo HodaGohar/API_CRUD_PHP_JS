@@ -1,0 +1,24 @@
+body{
+    width: 100%;
+}
+input{
+    box-shadow: 5px 5px 10px rgb(0 0 0/15%);
+}
+label{
+    font-size: 20px;
+    font-weight: bolder;
+    color: rgb(208, 67, 67);
+}
+h2{
+    color:rgb(208, 67, 67);
+    padding: 10px;
+    margin: 20px;
+}
+table{
+    margin-bottom: 15px;
+}
+table thead{
+    font-size: large;
+    color: rgb(208, 67, 67);
+    box-shadow: 5px 5px 10px rgb(0 0 0/15%);
+}
