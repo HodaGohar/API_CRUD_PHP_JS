@@ -1,19 +1,16 @@
 <?php
 include 'db.php';
 header('Content-Type: application/json');
-
-$response = array('success' => false);
-
+$mas = array('success' => TRUE);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'];
-
-    $sql = "DELETE FROM users WHERE id=$id";
-    if ($conn->query($sql) === TRUE) {
-        $response['success'] = true;
-        $response['message'] = 'User deleted successfully!';
+    $del = "DELETE  FROM  users  WHERE  id=$id" ;
+    if ($conn->query($del) === TRUE) {
+        $mas['message'] = 'deleted successfully';
     } else {
-        $response['message'] = 'Failed to delete user.';
+        $mas['success'] = FALSE;
+        $mas['message'] = 'error during deleted.';
     }
-    echo json_encode($response);
+  echo json_encode($mas);
 }
 ?>
