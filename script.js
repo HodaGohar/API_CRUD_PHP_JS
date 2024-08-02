@@ -35,7 +35,55 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+
+    document.getElementById('editForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var formData = new FormData(this);
+
+        fetch('update.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    throw new Error(text);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                document.getElementById('message').innerText = 'User updated successfully!';
+                document.getElementById('message').className = 'alert alert-success';
+                fetchUser();
+
+                $('#editUserModal').modal('hide');
+            } else {
+                document.getElementById('message').innerText = 'Failed to update user: ' + data.message;
+                document.getElementById('message').className = 'alert alert-danger';
+            }
+        })
+        .catch(error => {
+            document.getElementById('message').innerText = 'Error: ' + error.message;
+            document.getElementById('message').className = 'alert alert-danger';
+        });
+    });
 });
+
+function editUser(id, name, email, phone, age, city) {
+    document.getElementById('edit-id').value = id;
+    document.getElementById('edit-name').value = name;
+    document.getElementById('edit-email').value = email;
+    document.getElementById('edit-phone').value = phone;
+    document.getElementById('edit-age').value = age;
+    document.getElementById('edit-city').value = city;
+    
+    $('#editUserModal').modal('show');
+}
+
+// });
 function fetchUser() {
     fetch('read.php')
     .then(response => response.json())
@@ -97,16 +145,4 @@ function deleteUser(id) {
         document.getElementById('message').innerText = 'Error: ' + error.message;
         document.getElementById('message').className = 'alert alert-danger';
     });
-}
-
-function editUser(id , name , email , phone , age , city) {
-    document.getElementById('edit-id').value = id;
-    document.getElementById('edit-name').value = name;
-    document.getElementById('edit-email').value = email;
-    document.getElementById('edit-phone').value = phone;
-    document.getElementById('edit-age').value = age;
-    document.getElementById('edit-city').value = city;
-    
-    var modal = new bootstrap.Modal(document.getElementById('editUserModal'));
-        modal.show();
 }
