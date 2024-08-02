@@ -1,40 +1,41 @@
-document.addEventListener('DOMContentLoaded' , function(){
+document.addEventListener('DOMContentLoaded', function() {
     fetchUser();
 
-    document.getElementById('createForm').addEventListener('submit', function (event) {
+    document.getElementById('createForm').addEventListener('submit', function(event) {
         event.preventDefault();
+
         var formData = new FormData(this);
-        fetch('create.php' ,{
+
+        fetch('create.php', {
             method: 'POST',
             body: formData
         })
-        .then(response => response.text())
-        .then(data =>{
-            fetchUser();
-            this.reset();
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    throw new Error(text);
+                });
+            }
+            return response.json();
         })
-        .catch(error => console.error("Error:" , error));
-    });
-
-    document.getElementById('editForm').addEventListener('submit' , function(event) {
-        event.preventDefault();
-
-        var formData = new FormData(this);
-        console.log(formData);
-        fetch('update.php' , {
-            method: 'POST',
-            body:  formData 
-        })
-        .then(response => response.text())
         .then(data => {
-            fetchUser();
-            var model = bootstrap.Modal.getInstance(document.getElementById('editUserModal'));
-            model.hide();
+            if (data.success) {
+                document.getElementById('message').innerText = 'User added successfully!';
+                document.getElementById('message').className = 'alert alert-success';
+                fetchUser();
+                this.reset();
+            } else {
+                document.getElementById('message').innerText = 'Failed to add user: ' + data.message;
+                document.getElementById('message').className = 'alert alert-danger';
+            }
         })
-        .catch(error => console.error("Error:" , error));
+        .catch(error => {
+            document.getElementById('message').innerText = 'Error: ' + error.message;
+            document.getElementById('message').className = 'alert alert-danger';
+        });
     });
-});
 
+});
 function fetchUser() {
     fetch('read.php')
     .then(response => response.json())
@@ -64,6 +65,9 @@ function fetchUser() {
 }
 
 function deleteUser(id) {
+    if (!confirm("Are you sure you want to delete this user?")) {
+        return;
+    }
     var formData = new FormData();
     formData.append('id' , id);
 
@@ -71,11 +75,28 @@ function deleteUser(id) {
         method: 'POST',
         body: formData
     })
-    .then(response => response.text())
-    .then(data => {
-        fetchUser();
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                throw new Error(text);
+            });
+        }
+        return response.json();
     })
-    .catch(error => console.error("Error:" , error));
+    .then(data => {
+        if (data.success) {
+            document.getElementById('message').innerText = 'User deleted successfully!';
+            document.getElementById('message').className = 'alert alert-success';
+            fetchUser();
+        } else {
+            document.getElementById('message').innerText = 'Failed to delete user: ' + data.message;
+            document.getElementById('message').className = 'alert alert-danger';
+        }
+    })
+    .catch(error => {
+        document.getElementById('message').innerText = 'Error: ' + error.message;
+        document.getElementById('message').className = 'alert alert-danger';
+    });
 }
 
 function editUser(id , name , email , phone , age , city) {
