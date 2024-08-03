@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             if (data.success) {
-                document.getElementById('message').innerText = 'User added successfully!';
+                document.getElementById('message').innerText = 'User added successfully.';
                 document.getElementById('message').className = 'alert alert-success';
                 fetchUser();
                 this.reset();
