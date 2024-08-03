@@ -12,6 +12,7 @@
   <body>
     <div class="container mt-5">
         <h2 class="text-center">To-Do List (API CRUD)</h2>
+        <div id="alert-container" class="mt-3"></div>
         <form id="createForm" method="POST" action="create.php">
             <div class="form-group">
                 <label for="name">Name</label>
@@ -60,6 +61,7 @@
                 <h4 class="modal-title">Edit Task</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
+        <div id="alert-container" class="mt-3"></div>
             <form id="editForm" method="POST" action="update.php">
                 <div class="modal-body">
                     <input type="hidden" id="edit-id" name="id">

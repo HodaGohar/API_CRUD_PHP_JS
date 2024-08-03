@@ -1,89 +1,41 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     fetchUser();
 
-    document.getElementById('createForm').addEventListener('submit', function(event) {
+    document.getElementById('createForm').addEventListener('submit', function (event) {
         event.preventDefault();
-
         var formData = new FormData(this);
-
         fetch('create.php', {
             method: 'POST',
             body: formData
         })
-        .then(response => {
-            if (!response.ok) {
-                return response.text().then(text => {
-                    throw new Error(text);
-                });
-            }
-            return response.json();
-        })
+        .then(response => response.text())
         .then(data => {
-            if (data.success) {
-                document.getElementById('message').innerText = 'User added successfully.';
-                document.getElementById('message').className = 'alert alert-success';
-                fetchUser();
-                this.reset();
-            } else {
-                document.getElementById('message').innerText = 'Failed to add user: ' + data.message;
-                document.getElementById('message').className = 'alert alert-danger';
-            }
+            fetchUser();
+            showMessage("Record created successfully!", "success");
+            this.reset();
         })
-        .catch(error => {
-            document.getElementById('message').innerText = 'Error: ' + error.message;
-            document.getElementById('message').className = 'alert alert-danger';
-        });
+        .catch(error => showMessage("Error creating record: " + error, "danger"));
     });
 
-
-    document.getElementById('editForm').addEventListener('submit', function(event) {
+    document.getElementById('editForm').addEventListener('submit', function (event) {
         event.preventDefault();
 
         var formData = new FormData(this);
-
         fetch('update.php', {
             method: 'POST',
             body: formData
         })
-        .then(response => {
-            if (!response.ok) {
-                return response.text().then(text => {
-                    throw new Error(text);
-                });
-            }
-            return response.json();
-        })
+        .then(response => response.text())
         .then(data => {
-            if (data.success) {
-                document.getElementById('message').innerText = 'User updated successfully!';
-                document.getElementById('message').className = 'alert alert-success';
-                fetchUser();
-
-                $('#editUserModal').modal('hide');
-            } else {
-                document.getElementById('message').innerText = 'Failed to update user: ' + data.message;
-                document.getElementById('message').className = 'alert alert-danger';
-            }
+            fetchUser();
+            showMessage("Record updated successfully!", "success");
+            var modal = bootstrap.Modal.getInstance(document.getElementById('editUserModal'));
+            modal.hide();
         })
-        .catch(error => {
-            document.getElementById('message').innerText = 'Error: ' + error.message;
-            document.getElementById('message').className = 'alert alert-danger';
-        });
+        .catch(error => showMessage("Error updating record: " + error, "danger"));
     });
 });
 
-function editUser(id, name, email, phone, age, city) {
-    document.getElementById('edit-id').value = id;
-    document.getElementById('edit-name').value = name;
-    document.getElementById('edit-email').value = email;
-    document.getElementById('edit-phone').value = phone;
-    document.getElementById('edit-age').value = age;
-    document.getElementById('edit-city').value = city;
-    
-    $('#editUserModal').modal('show');
-}
-
-// });
 function fetchUser() {
     fetch('read.php')
     .then(response => response.json())
@@ -102,47 +54,60 @@ function fetchUser() {
               <td>
                    <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">Delete</button>
                    <button class="btn btn-success btn-sm" onclick="editUser(${user.id}, '${user.name}', '${user.email}',
-                   '${user.phone}', '${user.age}','${user.city}'
-                   )">Edit</button>
+                   '${user.phone}', '${user.age}', '${user.city}')">Edit</button>
                    </td>
             `;
             tbody.appendChild(tr);
         });
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => showMessage('Error fetching users: ' + error, "danger"));
 }
 
 function deleteUser(id) {
-    if (!confirm("Are you sure you want to delete this user?")) {
-        return;
-    }
     var formData = new FormData();
-    formData.append('id' , id);
+    formData.append('id', id);
 
-    fetch('delete.php' , {
+    fetch('delete.php', {
         method: 'POST',
         body: formData
     })
-    .then(response => {
-        if (!response.ok) {
-            return response.text().then(text => {
-                throw new Error(text);
-            });
-        }
-        return response.json();
-    })
+    .then(response => response.text())
     .then(data => {
-        if (data.success) {
-            document.getElementById('message').innerText = 'User deleted successfully!';
-            document.getElementById('message').className = 'alert alert-success';
-            fetchUser();
-        } else {
-            document.getElementById('message').innerText = 'Failed to delete user: ' + data.message;
-            document.getElementById('message').className = 'alert alert-danger';
-        }
+        fetchUser();
+        showMessage("Record deleted successfully!", "success");
     })
-    .catch(error => {
-        document.getElementById('message').innerText = 'Error: ' + error.message;
-        document.getElementById('message').className = 'alert alert-danger';
-    });
+    .catch(error => showMessage("Error deleting record: " + error, "danger"));
+}
+
+function editUser(id, name, email, phone, age, city) {
+    document.getElementById('edit-id').value = id;
+    document.getElementById('edit-name').value = name;
+    document.getElementById('edit-email').value = email;
+    document.getElementById('edit-phone').value = phone;
+    document.getElementById('edit-age').value = age;
+    document.getElementById('edit-city').value = city;
+    
+    var modal = new bootstrap.Modal(document.getElementById('editUserModal'));
+    modal.show();
+}
+
+function showMessage(message, type) {
+    var alertContainer = document.getElementById('alert-container');
+    var alert = document.createElement('div');
+    alert.className = `alert alert-${type} alert-dismissible fade show`;
+    alert.role = 'alert';
+    alert.innerHTML = `
+        ${message}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    `;
+    alertContainer.appendChild(alert);
+
+    // Automatically remove the alert after 5 seconds
+    setTimeout(() => {
+        alert.classList.remove('show');
+        alert.classList.add('hide');
+        setTimeout(() => alert.remove(), 500);
+    }, 1000);
 }
